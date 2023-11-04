@@ -703,7 +703,7 @@ function renderUI() {
 				}
 				if (shiftButton.hovered("none", mouse)) {
 					shiftButton.click()
-					keys["ShiftLeft"] = true
+					keys["KeyC"] = true
 				}
 			}
 			
