@@ -42,9 +42,9 @@ class Player extends Object3D {
 	animPoint = 0
 	animVel = 1
 	jumpOff = 0
-	wall = {x: 0, y: 0, v: 3}
+	wall = {x: 0, z: 0, v: 3}
 	sliding = false
-	lastWall = {x: 0, y: 0}
+	lastWall = {x: 0, z: 0}
 	cameraY = 0.75
 	constructor(x, y, z) {
 		super(x, y, z, 0.5, 1.9, 0.5)
