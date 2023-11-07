@@ -1,24 +1,37 @@
 @font-face {
-  font-family: "font";
-  src: url("assets/font.ttf");
-}
-
-#getInput {
-	position: absolute;
-	left: -1000px;
-}
-
-canvas {
-	user-select: none;
-	position: absolute;
-	left: 0;
-	top: 0;
-	transform-origin: top left;
-	margin: 0;
-}
-
-body {
-	overflow: hidden;
-	background-color: #161616;
-  	background-image: url(assets/bg.png);
-}
+	font-family: "font";
+	src: url("assets/font.ttf");
+  }
+  
+  #getInput {
+	  position: absolute;
+	  left: -1000px;
+  }
+  
+  canvas {
+	  user-select: none;
+	  -webkit-user-select: none;
+	  -moz-user-select: none;
+	  -ms-user-select: none;
+	  position: absolute;
+	  touch-action: none;
+	  left: 0;
+	  top: 0;
+	  transform-origin: top left;
+	  margin: 0;
+  }
+  
+  body {
+	  overflow: hidden;
+	  background-color: #161616;
+		background-image: url(assets/bg.png);
+  }
+  
+  #cover {
+	  position: absolute;
+	  top: 0px;
+	  left: 0px;
+	  width: 5000px;
+	  height: 5000px;
+	  background-color: #161616;
+  }
