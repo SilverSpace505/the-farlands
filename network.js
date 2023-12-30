@@ -37,6 +37,22 @@ function sendWelcome() {
 	}, 1000)
 }
 
+var vid = ""
+var vidLoaded = localStorage.getItem("id")
+var letters = "abcdefghijklmnopqrstuvABCDEFGHIJKLMNOPQRS0123456789"
+if (vidLoaded) {
+	vid = vidLoaded
+} else {
+	for (let i = 0; i < 8; i++) {
+		vid += letters[Math.round(Math.random()*(letters.length-1))]
+	}
+	localStorage.setItem("id", vid)
+}
+
+function getViews() {
+	ws.send(JSON.stringify({getViews: true}))
+}
+
 function connectToServer() {
 	if (ws) {
 		if (ws.readyState == WebSocket.OPEN) {
@@ -57,9 +73,13 @@ function connectToServer() {
 		if (msg.connected) {
 			connected = true
 			console.log("Connected with id: " + msg.connected)
+			sendMsg({view: vid})
 			id = msg.connected
 			playerData[id] = {}
 		}
+		if (msg.views) {
+            console.log(JSON.stringify(msg.views))
+        }
 		if (msg.data) {
 			for (let player in msg.data) {
 				playerData[player] = msg.data[player]
