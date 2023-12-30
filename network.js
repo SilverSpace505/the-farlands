@@ -46,18 +46,18 @@ function connectToServer() {
 	connected = false
 	connecting = -1
 	id = 0
-	ws = new WebSocket("wss://silver-main.glitch.me")
+	ws = new WebSocket("wss://server.silverspace.online:443")
 
 	ws.addEventListener("open", (event) => { 
-		sendMsg({"connect": true}, true)
+		sendMsg({connect: "the-farlands"}, true)
 	})
 	
 	ws.addEventListener("message", (event) => {
 		var msg = JSON.parse(event.data)
-		if (msg.id) {
+		if (msg.connected) {
 			connected = true
-			console.log("Connected with id: " + msg.id)
-			id = msg.id
+			console.log("Connected with id: " + msg.connected)
+			id = msg.connected
 			playerData[id] = {}
 		}
 		if (msg.data) {

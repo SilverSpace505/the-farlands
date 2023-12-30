@@ -32,8 +32,6 @@ var delta = 0
 var fogDistance = 0
 var blockBig = true
 
-var mobile = false
-
 var font = new FontFace("font", "url(assets/font.ttf)")
 var fontLoaded = false
 font.load().then(function(loadedFont) {

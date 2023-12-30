@@ -25,6 +25,7 @@ var mouseLocked = false
 
 var moved = 0
 var downTime = 0
+var mobile = false
 
 // Key Manager
 addEventListener("keydown", (event) => {
