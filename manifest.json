@@ -2,7 +2,7 @@
     "name": "The Farlands",
     "short_name": "The Farlands",
     "description": "A awesome game made by Silver",
-    "start_url": "/the-farlands",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#000000",
     "theme_color": "#000000",
