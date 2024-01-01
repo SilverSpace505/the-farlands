@@ -77,6 +77,9 @@ function connectToServer() {
 			id = msg.connected
 			playerData[id] = {}
 		}
+		if (msg.ping) {
+            sendMsg({ping: true})
+        }
 		if (msg.views) {
             console.log(JSON.stringify(msg.views))
         }
