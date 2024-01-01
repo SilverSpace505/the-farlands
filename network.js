@@ -53,6 +53,8 @@ function getViews() {
 	ws.send(JSON.stringify({getViews: true}))
 }
 
+var wConnect = false
+
 function connectToServer() {
 	if (ws) {
 		if (ws.readyState == WebSocket.OPEN) {
@@ -77,7 +79,7 @@ function connectToServer() {
 			id = msg.connected
 			playerData[id] = {}
 		}
-		if (msg.ping) {
+		if (msg.ping && !document.hidden) {
             sendMsg({ping: true})
         }
 		if (msg.views) {
@@ -171,7 +173,7 @@ function connectToServer() {
 	ws.addEventListener("close", (event) => {
 		console.log("Disconnected from server")
 		if (scene != "disconnected") {
-			connectToServer()
+			wConnect = true
 		}
 	})
 }

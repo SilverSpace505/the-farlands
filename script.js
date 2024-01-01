@@ -403,6 +403,11 @@ function render(timestamp) {
 	recipesScroll.clear(false)
 
 	devlog.clear(false)
+
+	if (wConnect && !document.hidden) {
+		wConnect = false
+		connectToServer()
+	}
 	
 	delta = (timestamp - lastTime) / 1000
 	lastTime = timestamp
