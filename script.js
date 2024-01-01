@@ -381,6 +381,9 @@ function render(timestamp) {
   	uictx.clearRect(0, 0, uiCanvas.width, uiCanvas.height)
 	uictx.imageSmoothingEnabled = false
 
+	document.body.style.zoom = "100%"
+    window.scrollTo(0, 0)
+
 	overlay.width = uiCanvas.width
 	overlay.height = uiCanvas.height
 	overlay.x = overlay.width/2
