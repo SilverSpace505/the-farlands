@@ -370,6 +370,7 @@ class Particle extends Box {
 	constructor(colour, x, y, z, velx, vely, velz, size, lifetime) {
 		super(0, 0, 0, size, size, size, colour)
 		this.rsize = size
+		this.box.alpha = 0.8
 		this.vel = {x: velx, y: vely, z: velz}
 		this.wpos = {x:x, y:y, z:z}
 		this.lifetime = lifetime

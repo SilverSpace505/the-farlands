@@ -31,11 +31,19 @@ class Webgl {
 		uniform sampler2D uTexture;
 		uniform bool useAlphaMap;
 		uniform sampler2D uAlpha;
+		uniform float uAlpha2;
 
  		uniform vec3 uCamera;
 	 	uniform float rDistance;
 		
 		out vec4 fragColour;
+
+		const mat4 ditherMatrix = mat4(
+			0.0625,  0.5625,  0.1875,  0.6875,
+			0.8125,  0.3125,  0.9375,  0.4375,
+			0.25,    0.75,    0.125,   0.625,
+			0.9375,  0.4375,  0.8125,  0.3125
+		);
 		
 		void main() {
 			float distance2 = distance(vPos.xz, uCamera.xz)/rDistance;
@@ -56,7 +64,7 @@ class Webgl {
 				colour.g *= vColour.g;
 				colour.b *= vColour.b;
 			}
-			float alpha = 1.0;
+			float alpha = uAlpha2;
 			if (useAlphaMap) {
 				alpha = texture(uAlpha, vUv).r;
 			}
@@ -66,7 +74,11 @@ class Webgl {
 	 		if (alpha <= 0.0) {
 				discard;
 			}
-			fragColour = vec4(colour.r+(0.529-colour.r)*distance2, colour.g+(0.808-colour.g)*distance2, colour.b+(0.922-colour.b)*distance2, alpha);
+			float off = 1.0;
+			if (ditherMatrix[int(mod(gl_FragCoord.x+colour.r*off+colour.g*off+colour.b*off, 4.0))][int(mod(gl_FragCoord.y+colour.r+colour.g+colour.b, 4.0))] < 1.0-alpha) {
+				discard;
+			}
+			fragColour = vec4(colour.r+(0.529-colour.r)*distance2, colour.g+(0.808-colour.g)*distance2, colour.b+(0.922-colour.b)*distance2, 1.0);
 		}
 	`
 	vertexShaderGL
@@ -80,6 +92,7 @@ class Webgl {
 	updateProjection = true
 	rDistance = 0
 	modelBuffer
+	alpha = 0
 
 	constructor() {
 		this.vertexShaderGL = gl.createShader(gl.VERTEX_SHADER)
@@ -114,6 +127,7 @@ class Webgl {
 			alpha: gl.getUniformLocation(this.program, "uAlpha"),
 			camera: gl.getUniformLocation(this.program, "uCamera"),
 			rDistance: gl.getUniformLocation(this.program, "rDistance"),
+			alpha2: gl.getUniformLocation(this.program, "uAlpha2")
 		}
 
 		this.modelBuffer = gl.createBuffer()
@@ -239,6 +253,7 @@ class Webgl {
 			customRotOff = []
 			ignoreFog = false
 			originalFaces = []
+			alpha = 1
 			constructor(x, y, z, width, height, depth, vertices, faces, colours) {
 				this.pos = {x: x, y: y, z: z}
 				this.size = {x: width, y: height, z: depth}
@@ -370,6 +385,11 @@ class Webgl {
 					return
 				}
 
+				if (this.alpha != webgl.alpha) {
+					webgl.alpha = this.alpha
+					gl.uniform1f(webgl.uniforms.alpha2, this.alpha)
+				}
+
 				if (this.ignoreFog) {
 					gl.uniform1f(webgl.uniforms.rDistance, 200)
 				}
@@ -391,11 +411,11 @@ class Webgl {
 					gl.disable(gl.CULL_FACE)
 				}
 				
-				this.orderCooldown -= 1
-				if ((this.order && this.orderCooldown <= 0) || jKeys["KeyH"]) {
-					this.orderCooldown = fps
-					this.orderFaces(jKeys["KeyH"])
-				}
+				// this.orderCooldown -= 1
+				// if ((this.order && this.orderCooldown <= 0) || jKeys["KeyH"]) {
+				// 	this.orderCooldown = fps
+				// 	this.orderFaces(jKeys["KeyH"])
+				// }
 				let model = this.getModel()
 
 				if (this.updateTextures) {
