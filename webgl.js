@@ -74,11 +74,10 @@ class Webgl {
 	 		if (alpha <= 0.0) {
 				discard;
 			}
-			float off = 1.0;
-			if (ditherMatrix[int(mod(gl_FragCoord.x+colour.r*off+colour.g*off+colour.b*off, 4.0))][int(mod(gl_FragCoord.y+colour.r+colour.g+colour.b, 4.0))] < 1.0-alpha) {
+			if (ditherMatrix[int(mod(gl_FragCoord.x, 4.0))][int(mod(gl_FragCoord.y, 4.0))] < 1.0-alpha) {
 				discard;
 			}
-			fragColour = vec4(colour.r+(0.529-colour.r)*distance2, colour.g+(0.808-colour.g)*distance2, colour.b+(0.922-colour.b)*distance2, 1.0);
+			fragColour = vec4(colour.r+(0.529-colour.r)*distance2*alpha, colour.g+(0.808-colour.g)*distance2*alpha, colour.b+(0.922-colour.b)*distance2*alpha, 1.0);
 		}
 	`
 	vertexShaderGL
