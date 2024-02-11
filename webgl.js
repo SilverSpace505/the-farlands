@@ -13,10 +13,12 @@ class Webgl {
 		out vec2 vUv;
 		out vec4 vColour;
 		out vec4 vPos;
+		out mat4 vView;
 		void main() {
 			vUv = aUv;
 			vColour = aColour;
 	 		vPos = uModel * aPosition;
+			vView = uView;
 			gl_Position = uProjection * uView * uModel * aPosition;
 		}
 	`
@@ -26,6 +28,7 @@ class Webgl {
 		in vec2 vUv;
 		in vec4 vColour;
 		in vec4 vPos;
+		in mat4 vView;
 
 		uniform bool useTexture;
 		uniform sampler2D uTexture;
@@ -38,12 +41,25 @@ class Webgl {
 		
 		out vec4 fragColour;
 
-		const mat4 ditherMatrix = mat4(
-			0.0625,  0.5625,  0.1875,  0.6875,
-			0.8125,  0.3125,  0.9375,  0.4375,
-			0.25,    0.75,    0.125,   0.625,
-			0.9375,  0.4375,  0.8125,  0.3125
+		int ditherMatrix[64] = int[64](
+			0, 32, 8, 40, 2, 34, 10, 42,
+			48, 16, 56, 24, 50, 18, 58, 26,
+			12, 44, 4, 36, 14, 46, 6, 38,
+			60, 28, 52, 20, 62, 30, 54, 22,
+			3, 35, 11, 43, 1, 33, 9, 41,
+			51, 19, 59, 27, 49, 17, 57, 25,
+			15, 47, 7, 39, 13, 45, 5, 37,
+			63, 31, 55, 23, 61, 29, 53, 21
 		);
+
+		bool ditherPattern(vec2 coord, float alpha) {
+			float size = 8.0;
+			vec2 ditherCoord = mod(coord, size);
+		
+			int threshold = ditherMatrix[int(ditherCoord.x)+int(ditherCoord.y)*int(size)];
+		
+			return float(threshold)/64.0 >= alpha;
+		}
 		
 		void main() {
 			float distance2 = distance(vPos.xz, uCamera.xz)/rDistance;
@@ -74,7 +90,9 @@ class Webgl {
 	 		if (alpha <= 0.0) {
 				discard;
 			}
-			if (ditherMatrix[int(mod(gl_FragCoord.x, 4.0))][int(mod(gl_FragCoord.y, 4.0))] < 1.0-alpha) {
+			vec4 vSpace = vView * vec4(vPos.xyz, 1.0);
+			float distance = length(vSpace.xyz)/100.0;	
+			if (ditherPattern(gl_FragCoord.xy, alpha+distance)) {
 				discard;
 			}
 			fragColour = vec4(colour.r+(0.529-colour.r)*distance2*alpha, colour.g+(0.808-colour.g)*distance2*alpha, colour.b+(0.922-colour.b)*distance2*alpha, 1.0);
