@@ -28,7 +28,6 @@ var targetFOV = 60
 var fov = 60
 var cameraY = 0.75
 var cameraYTarget = 0.75
-var delta = 0
 var fogDistance = 0
 var blockBig = true
 
@@ -199,7 +198,7 @@ var overlayT = 0
 var popupAlpha = 1
 var popupT = 1
 
-var overlay = new Canvas(uiCanvas.width/2, uiCanvas.height/2, uiCanvas.width, uiCanvas.height)
+var overlay = new ui.Canvas()
 overlay.order = 1
 
 function isCollidingBlock(object, x, y, z) {
@@ -339,7 +338,10 @@ function raycast3D(start, angle, distance) {
 }
 
 var tickTime = 0
+
 var lastTime = 0
+var su = 0
+var delta = 0
 
 var scene = "menu"
 var targetScene = "menu"
@@ -352,67 +354,34 @@ function render(timestamp) {
 		safeInventory = copyInventory()
 	}
 
-	var w = window.innerWidth
-	var h = window.innerHeight
+	input.setGlobals()
+	utils.getDelta(timestamp)
+	ui.resizeCanvas()
+	ui.getSu()
 
-	let aspect = w / h
-
-	su = aspect
-	if (su > targetSize.x / targetSize.y) {
-		su = targetSize.x / targetSize.y
-	}
-
-	su *= screenScale
-
-	canvas.width = targetSize.x * aspect / screenScale
-	canvas.height = targetSize.x / screenScale
-	gl.canvas.width = canvas.width
-	gl.canvas.height = canvas.height
-
-	cScale = w / canvas.width
-	canvas.style.transform = `scale(${cScale})`
-	cScale /= screenScale
+	gl.canvas.width = window.innerWidth
+	gl.canvas.height = window.innerHeight
 
 	document.body.style.cursor = "default"
 
-	uiCanvas.width = canvas.width * screenScale
-	uiCanvas.height = canvas.height * screenScale
-	uiCanvas.style.transform = `scale(${cScale})`
-  	uictx.clearRect(0, 0, uiCanvas.width, uiCanvas.height)
-	uictx.imageSmoothingEnabled = false
+	if (scene == "game") {
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+	} else {
+		ui.rect(canvas.width/2, canvas.height/2, canvas.width, canvas.height, [22, 22, 22, 1])
+	}
 
 	document.body.style.zoom = "100%"
     window.scrollTo(0, 0)
 
-	overlay.width = uiCanvas.width
-	overlay.height = uiCanvas.height
-	overlay.x = overlay.width/2
-	overlay.y = overlay.height/2
-	overlay.bounds.maxX = overlay.width
-	overlay.bounds.maxY = overlay.height
+	overlay.set(canvas.width/2, canvas.height/2, canvas.width, canvas.height)
 
-	overlay.clear(false)
-
-	recipesScroll.x = (82.5*4 + 83*4/2)*su
-	recipesScroll.y = 61*4/2*su
-	recipesScroll.width = 86*4*su
-	recipesScroll.height = 61*4*su
+	recipesScroll.set((82.5*4 + 83*4/2)*su, 61*4/2*su, 86*4*su, 61*4*su)
 	recipesScroll.bounds.minY = (-64*rows + 61*4)*su
-	recipesScroll.bounds.maxX = 86*4*su
-	recipesScroll.bounds.maxY = 61*4*su
-	recipesScroll.clear(false)
-
-	devlog.clear(false)
 
 	if (wConnect && !document.hidden) {
 		wConnect = false
 		connectToServer()
 	}
-	
-	delta = (timestamp - lastTime) / 1000
-	lastTime = timestamp
-	if (!delta) { delta = 0 }
-	if (delta > 0.1) { delta = 0.1 }
 
 	tickTime += delta
 	time = Date.now() / 1000
@@ -423,7 +392,7 @@ function render(timestamp) {
 		menuTick()
 	}
 
-	downTime += delta
+	ctx.globalAlpha = 1
 
 	if (username.length > 15) {
 		username = username.substring(0, 15)
@@ -447,7 +416,7 @@ function render(timestamp) {
 
 	localStorage.setItem("data", JSON.stringify(saveData))
 
-	overlayA += (overlayT - overlayA) * delta * 5
+	overlayA += (overlayT - overlayA) * delta * 10
 
 	if (Math.abs(overlayT - overlayA) < 0.01 && overlayT == 1 && scene != targetScene) {
 		overlayT = 0
@@ -491,7 +460,7 @@ function render(timestamp) {
 		playerData = {}
 	}
 
-	ui.rect(overlay.ctx, uiCanvas.width/2, uiCanvas.height/2, uiCanvas.width, uiCanvas.height, [0, 0, 0, overlayA])
+	if (scene == "game" || targetScene == "game") ui.rect(canvas.width/2, canvas.height/2, canvas.width, canvas.height, [0, 0, 0, overlayA])
 
 	popupAlpha += (popupT - popupAlpha) * delta * 10
 
@@ -499,25 +468,26 @@ function render(timestamp) {
 		popupAlpha = 0
 	}
 
-	overlay.ctx.globalAlpha = popupAlpha
+	ctx.globalAlpha = popupAlpha
 
-	ui.rect(overlay.ctx, 10*su + 58.5*su, uiCanvas.height-20*su - 85*su + 25*su, 140*su, 100*su, [0, 0, 0, 0.5])
+	ui.rect(10*su + 58.5*su, canvas.height-20*su - 85*su + 25*su, 140*su, 100*su, [0, 0, 0, 0.5])
 	if (!connected && scene != "disconnected") {
-		ui.text(overlay.ctx, 10*su, uiCanvas.height-20*su - 110 * su + 25*su, 20*su, "Connecting")
-		ui.img(overlay.ctx, 10*su + 58.5*su, uiCanvas.height-20*su - 50 * su + 25*su, 100 * su, 100 * su, connectingImg, 
-			{use: true, x: (Math.round(time*100 / 32)*32) % (192), y: 0, width: 32, height: 32}
+		ui.text(10*su, canvas.height-20*su - 110 * su + 25*su, 20*su, "Connecting")
+		ui.img(10*su + 58.5*su, canvas.height-20*su - 50 * su + 25*su, 100 * su, 100 * su, connectingImg, 
+			[(Math.round(time*100 / 32)*32) % (192), 0, 32, 32]
 		)
 	} else if (scene == "game") {
-		ui.text(overlay.ctx, 10*su, uiCanvas.height-20*su - 110 * su + 25*su, 16*su, "Loading World")
-		ui.img(overlay.ctx, 10*su + 58.5*su, uiCanvas.height-20*su - 50 * su + 25*su, 100 * su, 100 * su, loadingImg, 
-			{use: true, x: (Math.round(time*250 / 32)*32) % (256), y: 0, width: 32, height: 32}
+		ui.text(10*su, canvas.height-20*su - 110 * su + 25*su, 16*su, "Loading World")
+		ui.img(10*su + 58.5*su, canvas.height-20*su - 50 * su + 25*su, 100 * su, 100 * su, loadingImg, 
+			[(Math.round(time*250 / 32)*32) % (256), 0, 32, 32]
 		)
 	}
 	
 
-	overlay.ctx.globalAlpha = 1
+	ctx.globalAlpha = 1
 
-	updateInput()
+	input.updateInput()
+	updateInput2()
 }
 
 // setInterval(orderTick, 1000/ordersPerSecond)

@@ -264,7 +264,7 @@ class Text3D extends Object3D {
 	constructor(x, y, z, text, sizePerCharacter) {
 		super(x, y, z, 1, 1, 1)
 		this.text = text
-		this.spc = sizePerCharacter*1.2
+		this.spc = sizePerCharacter
 		this.mesh = new webgl.Mesh(0, 0, 0, 1, 1, 1, [], [], [])
 		this.mesh.useTexture = true
 		this.mesh.texture = fontTexture
@@ -281,16 +281,37 @@ class Text3D extends Object3D {
 		this.rot.x = Math.atan2(l1, diff.y)
 		this.rot.x -= Math.PI/2
 	}
+	getWidth() {
+		let x = 0
+		for (let c of this.text) {
+			let cData = characters[c]
+			if (!cData) { 
+				if (c == " ") x += this.spc
+				continue 
+			}
+			let spacing = cData.length > 2 ? cData[2] : 1
+			x += this.spc * spacing + this.spc * 0.2
+		}
+		return x
+	}
 	renderMesh() {
 		this.mesh.vertices = []
 		this.mesh.faces = []
 		this.mesh.colours = []
 		this.mesh.uvs = []
 
+		let width = this.getWidth()
+
 		let i = 0
+		let x2 = 0
 		for (let c of this.text) {
 			let cData = characters[c]
-			if (!cData) { i++; continue }
+			if (!cData) { 
+				i++
+				if (c == " ") x2 += this.spc
+				continue 
+			}
+			let spacing = cData.length > 2 ? cData[2] : 1
 			let x = cData[0]
 			let y = cData[1]
 				
@@ -299,20 +320,22 @@ class Text3D extends Object3D {
 			let i2 = this.mesh.vertices.length/3+2
 			let i3 = this.mesh.vertices.length/3+3
 			this.mesh.vertices.push(
-				0+i*this.spc - this.text.length/2*this.spc,            0,            0,
-				this.spc/1.2+i*this.spc - this.text.length/2*this.spc, this.spc/1.2*1.4, 0,
-				this.spc/1.2+i*this.spc - this.text.length/2*this.spc, 0,            0,
-				0+i*this.spc - this.text.length/2*this.spc,      			 this.spc/1.2*1.4, 0,
+				0+x2 - width/2,            0,            0,
+				this.spc*spacing+x2 - width/2, this.spc*1.4, 0,
+				this.spc*spacing+x2 - width/2, 0,            0,
+				0+x2 - width/2,      			 this.spc*1.4, 0,
 			)
 			this.mesh.faces.push(
 				i0, i1, i2,
 				i0, i1, i3,
 			)
+			let sideOff1 = Math.floor((1-spacing) / 2 * 5) / 5 * fs.x
+			let sideOff2 = Math.ceil((1-spacing) / 2 * 5) / 5 * fs.x
 			this.mesh.uvs.push(
-				x*fs.x+0, y*fs.y+0,
-				x*fs.x+fs.x, y*fs.y+fs.y,
-				x*fs.x+fs.x, y*fs.y+0,
-				x*fs.x+0, y*fs.y+fs.y
+				x*fs.x+0+sideOff1, y*fs.y+0,
+				x*fs.x+fs.x-sideOff2, y*fs.y+fs.y,
+				x*fs.x+fs.x-sideOff2, y*fs.y+0,
+				x*fs.x+0+sideOff1, y*fs.y+fs.y
 			)
 			for (let i2 = 0; i2 < 4; i2++) {
 				this.mesh.colours.push(1, 1, 1)
@@ -343,6 +366,7 @@ class Text3D extends Object3D {
 				// 	this.mesh.colours.push(0, 0, 0)
 				// }
 				i++
+				x2 += this.spc * spacing + this.spc * 0.2
 			}
 		}
 

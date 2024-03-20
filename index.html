@@ -5,7 +5,6 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 	<title>The Farlands</title>
-	<link href="style.css" rel="stylesheet" type="text/css" />
 	<link rel="shortcut icon" type="image/jpg" href="assets/icon.png" />
 	<link rel="manifest" href="manifest.json">
 	<meta property="og:title" content="Silver"/>
@@ -44,10 +43,14 @@
 	<p>The Farlands is a game made by Silver. Silver is also known like silver, silverspace silverspace505,
 	silver505, Silver, SilverSpace, SilverSpace505, SilverSpace707, Silver505, and silverspace707.</p>
 
-	<div id="cover"></div>
+	<div id="cover" style="position: absolute;top: 0px;left: 0px;width: 5000px;height: 5000px;background-color: #161616;"></div>
 
-	<canvas id="canvas" width="960" height="576"></canvas>
-	<canvas id="ui-canvas"></canvas>
+	<canvas id="glcanvas"></canvas>
+	<canvas id="canvas"></canvas>
+
+	<script src="https://basic.silverspace.online/ui.js"></script>
+	<script src="https://basic.silverspace.online/input.js"></script>
+	<script src="https://basic.silverspace.online/utils.js"></script>
 
 	<textarea id="getInput"></textarea>
 
@@ -55,7 +58,7 @@
 	<script src="setup.js"></script>
 	<script src="webgl.js"></script>
 	<script src="utils.js"></script>
-	<script src="input.js"></script>
+	<!-- <script src="input.js"></script> -->
 	<script src="network.js"></script>
 
 	<!-- sprites -->
@@ -63,7 +66,8 @@
 	<script src="sprites/first.js"></script>
 	<script src="sprites/second.js"></script>
 	<script src="sprites/player.js"></script>
-	<script src="sprites/ui.js"></script>
+
+	<!-- <script src="sprites/ui.js"></script> -->
 	
 	<script src="ui.js"></script>
 

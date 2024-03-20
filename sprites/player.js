@@ -386,6 +386,8 @@ class Player extends Object3D {
 			this.lastWall.z = 0
 		}
 
+		
+
 		let vx = this.wall.x == 0 || this.wall.x != this.lastWall.x
 		let vz = this.wall.z == 0 || this.wall.z != this.lastWall.z
 
@@ -596,6 +598,9 @@ class Player extends Object3D {
 			// this.teleporting = true
 			// this.teleport = 0
 		}
+
+		this.wall.x = 0
+		this.wall.z = 0
 
 		let lastFalling2 = this.falling
 		let lastPos2 = { ...this.pos }
@@ -1156,15 +1161,15 @@ class Player extends Object3D {
 			
 			if (this.checkCollide()) {
 				this.pos.x = lastX
+				this.wall.x = Math.abs(x) / x
 				this.wall.v = 0
-				set.x = Math.abs(x) / x
 			}
 			var lastZ = this.pos.z
 			this.pos.z += z / steps
 			if (this.checkCollide()) {
 				this.pos.z = lastZ
+				this.wall.z = Math.abs(z) / z
 				this.wall.v = 0
-				set.z = Math.abs(z) / z
 			}
 			var lastY = this.pos.y
 			this.pos.y += y / steps
@@ -1180,9 +1185,15 @@ class Player extends Object3D {
 				}
 			}
 		}
-		if (set.x != 0 || set.z != 0) {
-			this.wall.x = set.x
-			this.wall.z = set.z
-		}
+		// if (set.x != 0 || set.z != 0) {
+		// 	this.wall.x = set.x
+		// 	this.wall.z = set.z
+		// }
+		// if (this.wall.x != Math.abs(x) / x) {
+		// 	this.wall.x = 0
+		// }
+		// if (this.wall.z != Math.abs(z) / z) {
+		// 	this.wall.z = 0
+		// }
 	}
 }

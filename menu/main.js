@@ -1,14 +1,14 @@
 
-var playButton = new SideButton("Play")
+var playButton = new ui.SideButton("Play")
 playButton.bgColour = [0, 0, 0, 0.75]
 
-var optionsButton = new SideButton("Options")
+var optionsButton = new ui.SideButton("Options")
 optionsButton.bgColour = [0, 0, 0, 0.75]
 
-var htpButton = new SideButton("How to Play")
+var htpButton = new ui.SideButton("How to Play")
 htpButton.bgColour = [0, 0, 0, 0.75]
 
-var backButton = new SideButton("Back")
+var backButton = new ui.SideButton("Back")
 backButton.bgColour = [0, 0, 0, 0.75]
 
 var bgImg = new Image()
@@ -17,19 +17,16 @@ bgImg.src = "assets/background.png?v="+Date.now()
 var discordImg = new Image() 
 discordImg.src = "assets/discord.png?v="+Date.now()
 
-var discordButton = new Button(0, 0, 0, 0, "img")
+var discordButton = new ui.Button("img")
 discordButton.img = discordImg
 
-var devlog = new Canvas(0, 0, 0, 0, [100, 100, 100, 1])
+var devlog = new ui.Canvas([100, 100, 100, 1])
 
 var devlogLines = 0
 
 function menuTick() {
 
-    backButton.x = 300/2*su
-    backButton.y = uiCanvas.height/2 + 75*su * 3
-    backButton.width = 300*su
-    backButton.height = 70*su
+    backButton.set(300/2*su, canvas.height/2 + 75*su * 3, 300*su, 70*su)
     backButton.textSize = 35*su
 
     data = {
@@ -50,30 +47,23 @@ function menuTick() {
         return
     }
 
-    let w = uiCanvas.height*(2286/1283)
-    if (uiCanvas.width > 2286) {
-        w = uiCanvas.width
+    let w = canvas.height*(2286/1283)
+    if (canvas.width > 2286) {
+        w = canvas.width
     }
-    ui.img(uictx, uiCanvas.width/2, uiCanvas.height/2, w, uiCanvas.height, bgImg)
+    ctx.globalAlpha = 1
+    ui.img(canvas.width/2, canvas.height/2, w, canvas.height, bgImg)
+   if (scene != "game" && targetScene != "game") ctx.globalAlpha = 1-overlayA
 
-    ui.text(uictx, uiCanvas.width/2, 75*su, (75+Math.sin(time)*2)*su, "The Farlands", "center")
-   
-    playButton.x = 500/2*su
-    playButton.y = uiCanvas.height/2 - 75*su
-    playButton.width = 500*su
-    playButton.height = 70*su
+    ui.text(canvas.width/2, 75*su, (75+Math.sin(time)*2)*su, "The Farlands", {align: "center"})
+    
+    playButton.set(500/2*su, canvas.height/2 - 75*su, 500*su, 70*su)
     playButton.textSize = 35*su
 
-    optionsButton.x = 500/2*su
-    optionsButton.y = uiCanvas.height/2
-    optionsButton.width = 500*su
-    optionsButton.height = 70*su
+    optionsButton.set(500/2*su, canvas.height/2, 500*su, 70*su)
     optionsButton.textSize = 35*su
 
-    htpButton.x = 500/2*su
-    htpButton.y = uiCanvas.height/2 + 75*su
-    htpButton.width = 500*su
-    htpButton.height = 70*su
+    htpButton.set(500/2*su, canvas.height/2 + 75*su, 500*su, 70*su)
     htpButton.textSize = 35*su
 
     if (connected) {
@@ -95,9 +85,9 @@ function menuTick() {
         }
     }
 
-    playButton.draw(uictx)
-    optionsButton.draw(uictx)
-    htpButton.draw(uictx)
+    playButton.draw()
+    optionsButton.draw()
+    htpButton.draw()
 
     if ((playButton.hovered()) && (!connected || overlayT != 0)) {
         document.body.style.cursor = "not-allowed"
@@ -108,29 +98,18 @@ function menuTick() {
 
     let animOff = (Math.sin(time*5)+1)*20*su - 35*su
 
-    discordButton.x = uiCanvas.width-20*su-100/2*su
-    discordButton.y = uiCanvas.height-20*su-100/2*su - (animOff > 0*su ? animOff : 0)
-    discordButton.width = 100*su
-    discordButton.height = 100*su
-
+    discordButton.set(canvas.width-20*su-100/2*su, canvas.height-20*su-100/2*su - (animOff > 0*su ? animOff : 0), 100*su, 100*su)
     discordButton.basic()
+    discordButton.draw()
 
-    discordButton.draw(uictx)
-
-    devlog.x = uiCanvas.width-348*su/2
-    devlog.y = uiCanvas.height/2 + 25*su
-    devlog.width = 350*su
-    devlog.height = 500*su
-    devlog.bounds.maxX = devlog.width
-    devlog.bounds.maxY = devlog.height
+    devlog.set(canvas.width-348*su/2, canvas.height/2 + 25*su, 350*su, 500*su)
     devlog.bounds.minY = -devlogLines * 15*su + devlog.height - 15*su
-
-    devlog.clear()
 
     // devlog.ctx.globalAlpha = 1
 
     let devlogs = ""
     // devlogs += "[]  \n \n"
+    devlogs += "[2024-03-21] Fixed shifting bug on mobile, recoded UI in my Basic Libary, and fixed wall jumping bugs, next steps are improving performance. \n \n"
     devlogs += "[2023-10-15] Wall jumping and sliding, so now you can do some awesome parkour. \n \n"
     devlogs += "[2023-10-14] Full mobile support! So now you can play on any device! Anywhere you want. \n \n"
     devlogs += "[2023-10-12] Added the in game devlog list. \n \n"
@@ -149,16 +128,35 @@ function menuTick() {
     devlogs += "[2023-09-21] UI scaling to make the game run better on more devices. \n \n"
     devlogs += "[2023-09-18] UI Recode. This will hopefully make the UI feel smoother, and run faster. I also made the recipes area scroll, which allows for infinite recipes which means more content :) \n \n"
     devlogs += "* See more on Discord *"
+    
+    devlog.draw()
+    ui.setC(devlog)
 
-    devlogLines = ui.text(devlog.ctx, 10*su, 15*su, 15*su, devlogs, "left", 15*su/4.5, devlog.width-25*su)
+    devlogLines = ui.text(10*su, 15*su, 15*su, devlogs, {wrap: devlog.width-25*su}).lines
 
-    ui.rect(overlay.ctx, uiCanvas.width-350*su/2, uiCanvas.height/2 - 223*su-25*su, 350*su-5*su, 50*su, [100, 100, 100, 1], 5*su, [0, 0, 0, 1])
     // ui.rect(overlay.ctx, uiCanvas.width-350*su/2, uiCanvas.height/2 - 197.5*su, 350*su-5*su, 5*su, [100, 100, 100, 1])
-    ui.text(overlay.ctx, uiCanvas.width-350*su/2, uiCanvas.height/2 - 223*su-25*su, 25*su, "Devlogs", "center")
 
     devlog.drawBorder(5*su, [0, 0, 0, 1])
+    devlog.drawScroll({x: 10*su, y: 10*su}, 7.5*su)
 
-    devlog.drawScroll()
+    ui.setC()
+
+    ui.rect(canvas.width-350*su/2, canvas.height/2 - 223*su-25*su, 350*su-5*su, 50*su, [100, 100, 100, 1], 5*su, [0, 0, 0, 1])
+    ui.text(canvas.width-350*su/2, canvas.height/2 - 223*su-25*su, 25*su, "Devlogs", {align: "center"})
 
     // playButton.draw(uictx)
+}
+
+input.scroll = (x, y) => {
+    if (devlog.hovered() && scene == "menu") devlog.scroll(x, y)
+    if (scene == "game" && inventoryOpen && tab == "backpack" && recipesScroll.hovered()) recipesScroll.scroll(x, y) 
+}
+
+input.checkInputs = (event) => {
+    input.cistart()
+
+    if (scene == "options") usernameBox2.checkFocus(event)
+    if (scene == "game" && inventoryOpen && tab == "options") usernameBox.checkFocus(event)
+
+    input.ciend()
 }

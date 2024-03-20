@@ -1,5 +1,5 @@
 
-var reconnectButton = new Button(0, 0, 0, 0, "rect", "Reconnect")
+var reconnectButton = new ui.Button("rect", "Reconnect")
 
 function disconnectedTick() {
     let w = uiCanvas.height*(2286/1283)

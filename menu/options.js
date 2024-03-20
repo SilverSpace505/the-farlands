@@ -1,62 +1,55 @@
 
-var hrd2 = createSlider(0, 0, 2, 12)
-var vrd2 = createSlider(0, 0, 2, 4)
-var cls2 = createSlider(0, 0, 1, 5)
-var ms2 = createSlider(0, 0, 1, 10)
-var fov2 = createSlider(0, 0, 30, 120)
-var ct2 = createSlider(0, 0, 1, 10)
+var hrd2 = createSlider(2, 12)
+var vrd2 = createSlider(2, 4)
+var cls2 = createSlider(1, 5)
+var ms2 = createSlider(1, 10)
+var fov2 = createSlider(30, 120)
+var ct2 = createSlider(1, 10)
 
-var upSkin2 = new Button(0, 0, 12*4, 12*4, "img")
+var upSkin2 = new ui.Button("img")
 upSkin2.img = inventoryImg
-upSkin2.clip = {use: true, x: 48, y: 176+16, width: 16, height: 16}
-var downSkin2 = new Button(0, 0, 12*4, 12*4, "img")
+upSkin2.clip = [48, 176+16, 16, 16]
+var downSkin2 = new ui.Button("img")
 downSkin2.img = inventoryImg
-downSkin2.clip = {use: true, x: 32, y: 176+16, width: 16, height: 16}
+downSkin2.clip = [32, 176+16, 16, 16]
 
-var usernameBox2 = new TextBox(150, 525, 200, 20, "Username")
+var usernameBox2 = new ui.TextBox("Username")
 usernameBox2.outlineSize = 5
 
 function optionsTick() {
-    let w = uiCanvas.height*(2286/1283)
-    if (uiCanvas.width > 2286) {
-        w = uiCanvas.width
+    let w = canvas.height*(2286/1283)
+    if (canvas.width > 2286) {
+        w = canvas.width
     }
-    ui.img(uictx, uiCanvas.width/2, uiCanvas.height/2, w, uiCanvas.height, bgImg)
-    ui.text(uictx, uiCanvas.width/2, 40*su, 40*su, "Options", "center")
+    ctx.globalAlpha = 1
+    ui.img(canvas.width/2, canvas.height/2, w, canvas.height, bgImg)
+    ctx.globalAlpha = 1-overlayA
+    ui.text(canvas.width/2, 40*su, 40*su, "Options", {align: "center"})
 
-    ui.text(uictx, uiCanvas.width/2-300*su, 150*su, 30*su, "Profile", "center")
+    ui.text(canvas.width/2-300*su, 150*su, 30*su, "Profile", {align: "center"})
 
-    usernameBox2.x = uiCanvas.width/2-300*su
-    usernameBox2.y = 190*su
-    usernameBox2.width = 300*su
-    usernameBox2.height = 30*su
+    usernameBox2.set(canvas.width/2-300*su, 190*su, 300*su, 30*su)
     usernameBox2.outlineSize = 7.5*su
 
     username = usernameBox2.text
 
     usernameBox2.hover()
 
-    usernameBox2.draw(uictx)
+    usernameBox2.draw()
 
-    upSkin2.x = uiCanvas.width/2-300*su - 65*su
-    upSkin2.y = 260*su
-    upSkin2.width = 18*4*su
-    upSkin2.height = 18*4*su
+    upSkin2.set(canvas.width/2-300*su - 65*su, 260*su, 18*4*su, 18*4*su)
 
-    downSkin2.x = uiCanvas.width/2-300*su - 65*su
-    downSkin2.y = 260*su + 18*4*su
-    downSkin2.width = 18*4*su
-    downSkin2.height = 18*4*su
+    downSkin2.set(canvas.width/2-300*su - 65*su, 260*su + 18*4*su, 18*4*su, 18*4*su)
 
     upSkin2.basic()
     downSkin2.basic()
 
-    upSkin2.draw(uictx)
-    downSkin2.draw(uictx)
+    upSkin2.draw()
+    downSkin2.draw()
 
-    ui.img(uictx, uiCanvas.width/2-300*su + 18*4/2*su + 125/2*su - 65*su, 295*su, 125*su, 125*su, playerImg, {use: true, x: 32+playerT[0]*48, y: (playerSize2.y-1-playerT[1])*44, width: 8, height: 8})
+    ui.img(canvas.width/2-300*su + 18*4/2*su + 125/2*su - 65*su, 295*su, 125*su, 125*su, playerImg, [32+playerT[0]*48, (playerSize2.y-1-playerT[1])*44, 8, 8])
 
-    ui.text(uictx, uiCanvas.width/2-300*su, 380*su, 20*su, "Player Skin: "+ playerNames[playerT.join(",")], "center")
+    ui.text(canvas.width/2-300*su, 380*su, 20*su, "Player Skin: "+ playerNames[playerT.join(",")], {align: "center"})
 
     var order = Object.keys(playerNames)
 
@@ -72,10 +65,10 @@ function optionsTick() {
             playerT = order[i].split(",")
             player.updateTexture(playerT)
         }
-        let old = uictx.globalAlpha 
-        uictx.globalAlpha = 0.25
-        ui.img(uictx, upSkin2.x, upSkin2.y, upSkin2.visWidth, upSkin2.visHeight, inventoryImg, {use: true, x: 192, y: 176, width: 16, height: 16})
-        uictx.globalAlpha = old
+        let old = ctx.globalAlpha 
+        ctx.globalAlpha = 0.25
+        ui.img(upSkin2.x, upSkin2.y, upSkin2.visWidth, upSkin2.visHeight, inventoryImg, [192, 176, 16, 16])
+        ctx.globalAlpha = old
     }
 
     if (downSkin2.hovered()) {
@@ -90,20 +83,19 @@ function optionsTick() {
             playerT = order[i].split(",")
             player.updateTexture(playerT)
         }
-        let old = uictx.globalAlpha 
-        uictx.globalAlpha = 0.25
-        ui.img(uictx, downSkin2.x, downSkin2.y, downSkin2.visWidth, downSkin2.visHeight, inventoryImg, {use: true, x: 192, y: 176, width: 16, height: 16})
-        uictx.globalAlpha = old
+        let old = ctx.globalAlpha 
+        ctx.globalAlpha = 0.25
+        ui.img(downSkin2.x, downSkin2.y, downSkin2.visWidth, downSkin2.visHeight, inventoryImg, [192, 176, 16, 16])
+        ctx.globalAlpha = old
     }
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 150*su, 30*su, "Game", "center")
+    ui.text(canvas.width/2+300*su, 150*su, 30*su, "Game", {align: "center"})
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 190*su, 20*su, "Horizontal Render Distance: "+renderSize.x, "center")
-    hrd2.x = uiCanvas.width/2+300*su
-    hrd2.y = 225*su
-    hrd2.width = 32*4*su; hrd2.height = 16*4*su; hrd2.handleWidth = 16*4*su; hrd2.handleHeight = 16*4*su
+    ui.text(canvas.width/2+300*su, 190*su, 20*su, "Horizontal Render Distance: "+renderSize.x, {align: "center"})
+    hrd2.set(canvas.width/2+300*su, 225*su, 32*4*su, 16*4*su)
+    hrd2.set2(16*4*su, 16*4*su, 12*su)
     hrd2.value = renderSize.x
-    hrd2.draw(uictx)
+    hrd2.draw()
     if (hrd2.hovered()) {
         if (mouse.ldown) {
             hrd2.value = Math.round(hrd2.convert(mouse.x))
@@ -114,12 +106,11 @@ function optionsTick() {
         highlightSlider(hrd2)
     }
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 190*su+75*su, 20*su, "Vertical Render Distance: "+renderSize.y, "center")
-    vrd2.x = uiCanvas.width/2+300*su
-    vrd2.y = 225*su+75*su
-    vrd2.width = 32*4*su; vrd2.height = 16*4*su; vrd2.handleWidth = 16*4*su; vrd2.handleHeight = 16*4*su
+    ui.text(canvas.width/2+300*su, 190*su+75*su, 20*su, "Vertical Render Distance: "+renderSize.y, {align: "center"})
+    vrd2.set(canvas.width/2+300*su, 225*su+75*su, 32*4*su, 16*4*su)
+    vrd2.set2(16*4*su, 16*4*su, 12*su)
     vrd2.value = renderSize.y
-    vrd2.draw(uictx)
+    vrd2.draw()
     if (vrd2.hovered()) {
         if (mouse.ldown) {
             vrd2.value = Math.round(vrd2.convert(mouse.x))
@@ -129,12 +120,11 @@ function optionsTick() {
         highlightSlider(vrd2)
     }
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 190*su+75*2*su, 20*su, "Chunk Load Speed: "+chunkLoadSpeed, "center")
-    cls2.x = uiCanvas.width/2+300*su
-    cls2.y = 225*su+75*2*su
-    cls2.width = 32*4*su; cls2.height = 16*4*su; cls2.handleWidth = 16*4*su; cls2.handleHeight = 16*4*su
+    ui.text(canvas.width/2+300*su, 190*su+75*2*su, 20*su, "Chunk Load Speed: "+chunkLoadSpeed, {align: "center"})
+    cls2.set(canvas.width/2+300*su, 225*su+75*2*su, 32*4*su, 16*4*su)
+    cls2.set2(16*4*su, 16*4*su, 12*su)
     cls2.value = chunkLoadSpeed
-    cls2.draw(uictx)
+    cls2.draw()
     if (cls2.hovered()) {
         if (mouse.ldown) {
             cls2.value = Math.round(cls2.convert(mouse.x))
@@ -144,12 +134,11 @@ function optionsTick() {
         highlightSlider(cls2)
     }
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 190*su+75*3*su, 20*su, "Mouse Sensitivity: "+Math.round(sensitivity*1000), "center")
-    ms2.x = uiCanvas.width/2+300*su
-    ms2.y = 225*su+75*3*su
-    ms2.width = 32*4*su; ms2.height = 16*4*su; ms2.handleWidth = 16*4*su; ms2.handleHeight = 16*4*su
+    ui.text(canvas.width/2+300*su, 190*su+75*3*su, 20*su, "Mouse Sensitivity: "+Math.round(sensitivity*1000), {align: "center"})
+    ms2.set(canvas.width/2+300*su, 225*su+75*3*su, 32*4*su, 16*4*su)
+    ms2.set2(16*4*su, 16*4*su, 12*su)
     ms2.value = Math.round(sensitivity*1000)
-    ms2.draw(uictx)
+    ms2.draw()
     if (ms2.hovered()) {
         if (mouse.ldown) {
             ms2.value = Math.round(ms2.convert(mouse.x))
@@ -159,12 +148,11 @@ function optionsTick() {
         highlightSlider(ms2)
     }
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 190*su+75*4*su, 20*su, "FOV: "+dFov, "center")
-    fov2.x = uiCanvas.width/2+300*su
-    fov2.y = 225*su+75*4*su
-    fov2.width = 32*4*su; fov2.height = 16*4*su; fov2.handleWidth = 16*4*su; fov2.handleHeight = 16*4*su
+    ui.text(canvas.width/2+300*su, 190*su+75*4*su, 20*su, "FOV: "+dFov, {align: "center"})
+    fov2.set(canvas.width/2+300*su, 225*su+75*4*su, 32*4*su, 16*4*su)
+    fov2.set2(16*4*su, 16*4*su, 12*su)
     fov2.value = dFov
-    fov2.draw(uictx)
+    fov2.draw()
     if (fov2.hovered()) {
         if (mouse.ldown) {
             fov2.value = Math.round(fov2.convert(mouse.x))
@@ -174,12 +162,11 @@ function optionsTick() {
         highlightSlider(fov2)
     }
 
-    ui.text(uictx, uiCanvas.width/2+300*su, 190*su+75*5*su, 20*su, "Camera Tilt: "+Math.round(ct2.value), "center")
-    ct2.x = uiCanvas.width/2+300*su
-    ct2.y = 225*su+75*5*su
-    ct2.width = 32*4*su; ct2.height = 16*4*su; ct2.handleWidth = 16*4*su; ct2.handleHeight = 16*4*su
+    ui.text(canvas.width/2+300*su, 190*su+75*5*su, 20*su, "Camera Tilt: "+Math.round(ct2.value), {align: "center"})
+    ct2.set(canvas.width/2+300*su, 225*su+75*5*su, 32*4*su, 16*4*su)
+    ct2.set2(16*4*su, 16*4*su, 12*su)
     ct2.value = (cameraTilt+0.5) * (10/5.5)
-    ct2.draw(uictx)
+    ct2.draw()
     if (ct2.hovered()) {
         if (mouse.ldown) {
             ct2.value = Math.round(ct2.convert(mouse.x))
@@ -190,8 +177,7 @@ function optionsTick() {
     }
 
     backButton.basic()
-
-    backButton.draw(uictx)
+    backButton.draw()
 
     if (backButton.hovered() && mouse.lclick && overlayT == 0) {
         backButton.click()

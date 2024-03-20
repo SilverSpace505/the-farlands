@@ -26,7 +26,7 @@ function gameTick() {
 		// airSpeed = 0.003
 	}
 
-	inventoryOpen = !isMouseLocked()
+	inventoryOpen = !input.isMouseLocked()
 	if (!inventoryOpen && selectedItem[0] != "none") {
 		inventory = [...safeInventory]
 		selectedItem = ["none", 0]
@@ -148,7 +148,7 @@ function gameTick() {
 	}
 
 	if (keys["Escape"]) {
-		unlockMouse()
+		input.unlockMouse()
 	}
 
 	var ct = { x: player.pos.x + Math.sin(camera.rot.y + Math.PI / 2) * 1, y: player.pos.y, z: player.pos.z + Math.cos(camera.rot.y + Math.PI / 2) * 1 }
@@ -320,9 +320,9 @@ function gameTick() {
 	// 	setBlock(set[0], set[1], set[2], set[3])
 	// }
 
-	for (let chunk in world) {
-		world[chunk].updateShader()
-	}
+	// for (let chunk in world) {
+	// 	world[chunk].updateShader()
+	// }
 
 	if (transparent.includes(getBlock(indicator.pos.x, indicator.pos.y, indicator.pos.z))) {
 		if (indicator.box.rOrder == 0) {
