@@ -3,8 +3,8 @@ var reconnectButton = new ui.Button("rect", "Reconnect")
 
 function disconnectedTick() {
     let w = uiCanvas.height*(2286/1283)
-    if (uiCanvas.width > 2286) {
-        w = uiCanvas.width
+    if (w < canvas.width) {
+        w = canvas.width
     }
     ui.img(uictx, uiCanvas.width/2, uiCanvas.height/2, w, uiCanvas.height, bgImg)
 

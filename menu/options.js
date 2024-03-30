@@ -18,7 +18,7 @@ usernameBox2.outlineSize = 5
 
 function optionsTick() {
     let w = canvas.height*(2286/1283)
-    if (canvas.width > 2286) {
+    if (w < canvas.width) {
         w = canvas.width
     }
     ctx.globalAlpha = 1
