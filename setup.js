@@ -1,6 +1,7 @@
 var glcanvas = document.getElementById("glcanvas")
 // ui setup
 utils.setup()
+utils.ignoreSafeArea()
 utils.setStyles()
 ui.setFont("font", "assets/font.ttf")
 ui.targetSize = {x: 1300, y: 824}
