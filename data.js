@@ -53,6 +53,7 @@ var blocks = {
 	/*51*/ "iceBlock": [[4, 4], [4, 4], [4, 4], [4, 4], [4, 4], [4, 4], false, "iceBlock"],
 	/*52*/ "jungleGrass": [[6, 6], [1, 0], [7, 6], [7, 6], [7, 6], [7, 6], true, "jungleGrass"],
 	/*53*/ "blueFlower": [[3, 5], [3, 5], [4, 6], [4, 6], [4, 6], [4, 6], false, "blueFlower", true, 0.499],
+	/*54*/ "rainbow": [[0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], false, "rainbow"]
 }
 var itemData = {
 	"none": [[], false, 0, 100],
@@ -118,6 +119,7 @@ var itemData = {
 	"jungleGrass": [[7, 4], true, 52, 100],
 	"blueFlower": [[7, 5], true, 53, 100],
 	"lavaOrb": [[7, 6], false, 0, 100],
+	"rainbow": [[2, 2], true, 54, 100],
 }
 var recipes = [
 	[["oakPlanks", 4], [["oakLog", 1]]],
@@ -154,6 +156,7 @@ var recipes = [
 	[["pinePlanks", 4], [["pineLog", 1]]],
 	[["iceBlock", 1], [["iceShard", 10]]],
 	[["lava", 1], [["lavaOrb", 10]]],
+	[["rainbow", 1], [["redFlower", 1], ["blueFlower", 1]]],
 ]
 
 var characters = {
@@ -202,7 +205,7 @@ var offF = 1/(fontSize.x*5)
 var none = [0, 6, 14]
 var noCol = [0, 6, 14, 45, 46, 53]
 // Size of tilemap
-var blocksSize = {x: 10, y: 7}
+var blocksSize = {x: 10, y: 8}
 var playerSize = {x: 12, y: 11}
 var psx = 1/playerSize.x
 var psy = 1/playerSize.y

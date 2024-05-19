@@ -1,4 +1,5 @@
-var glcanvas = document.getElementById("glcanvas")
+webgl.setup()
+webgl.setStyles()
 // ui setup
 utils.setup()
 utils.ignoreSafeArea()
@@ -71,39 +72,6 @@ var newCPS = 0
 
 var mobileL = false
 var mobileR = false
-
-var vertexShader = `
-  varying vec2 vUv;
-	varying vec3 vWorldPosition;
- 	varying vec3 vColor;
-	varying float depth;
- 
-  void main() {
-		vColor = color;
-    vUv = uv;
-		vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
-		
-    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-    depth = -worldPosition.z;
-
-    // Pass the vertex position to the fragment shader
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`
-
-var fragmentShader = `
-	uniform sampler2D map;
-	uniform sampler2D alphaMap;
- 	varying vec3 vWorldPosition;
-	varying vec2 vUv;
- 	varying vec3 vColor;
- 
-	void main() {
-		float alpha = texture2D( alphaMap, vUv).r;
-		vec4 colour = texture2D( map, vUv);
-		gl_FragColor = vec4(colour.r*vColor.r, colour.g*vColor.g, colour.b*vColor.b, alpha);
-	}
-`
 
 // var fragmentShader = `
 //   varying vec2 vUv;
